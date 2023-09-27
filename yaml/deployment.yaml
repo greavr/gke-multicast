@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: multicast-sender
+  labels:
+    app: multicast-sender
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: multicast-sender
+  template:
+    metadata:
+      labels:
+        app: multicast-sender
+    spec:
+      containers:
+      - name: sender
+        image: us-west1-docker.pkg.dev/rgreaves-testing/rick-test/multi-cast-sender
+        ports:
+        - containerPort: 5007
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: multicast-reciever
+  labels:
+    app: multicast-reciever
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: multicast-reciever
+  template:
+    metadata:
+      labels:
+        app: multicast-reciever
+    spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - multicast-sender
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - name: sender
+        image: us-west1-docker.pkg.dev/rgreaves-testing/rick-test/multi-cast-recieve
+        ports:
+        - containerPort: 5007
