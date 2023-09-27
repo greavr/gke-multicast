@@ -19,9 +19,9 @@ else:
     # on this port, listen ONLY to MCAST_GRP
     sock.bind((MCAST_GRP, MCAST_PORT))
 
-logging.info("MCAST_GRP: {MCAST_GRP}")
-logging.info("MCAST_PORT: {MCAST_PORT}")
-logging.info("Socker IP: {socket.AF_INET}")
+print("MCAST_GRP: {MCAST_GRP}")
+print("MCAST_PORT: {MCAST_PORT}")
+print("Socker IP: {socket.AF_INET}")
 
 mreq = struct.pack("4sl", socket.inet_aton(MCAST_GRP), socket.INADDR_ANY)
 
